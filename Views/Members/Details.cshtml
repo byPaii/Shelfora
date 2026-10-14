@@ -1,0 +1,11 @@
+@model Member
+@{
+    ViewData["Title"] = "Member details";
+}
+<div class="page-heading"><div><div class="eyebrow">PEOPLE / @Model.MemberCode</div><h1>@Model.FullName</h1><p class="text-secondary mb-0">Member since @Model.MembershipDate.ToString("d") · @(Model.IsActive ? "Active" : "Inactive")</p></div><div class="d-flex gap-2"><a class="btn btn-outline-secondary" asp-action="Edit" asp-route-id="@Model.Id">Edit member</a><a class="btn btn-outline-secondary" asp-action="Index">Back</a></div></div>
+<div class="content-card mb-3"><div class="detail-grid"><div class="detail-item"><small>Email</small>@(Model.Email ?? "—")</div><div class="detail-item"><small>Contact</small>@(Model.ContactNumber ?? "—")</div><div class="detail-item"><small>Address</small>@(Model.Address ?? "—")</div></div>@if (!string.IsNullOrWhiteSpace(Model.Notes)){<p class="mt-3 mb-0">@Model.Notes</p>}</div>
+<div class="content-card"><div class="panel-heading"><h2 class="h6">Borrowing and return history</h2></div>
+    @if(Model.Transactions.Count==0){<div class="empty-inline">No transactions for this member.</div>}
+    else{<div class="table-responsive"><table class="table"><thead><tr><th>Transaction</th><th>Book</th><th>Borrowed</th><th>Due</th><th>Qty</th><th>Returns</th><th>Status</th></tr></thead><tbody>@foreach(var t in Model.Transactions.OrderByDescending(x=>x.BorrowDate)){<tr><td><a asp-controller="Circulation" asp-action="Details" asp-route-id="@t.Id">@t.TransactionCode</a></td><td>@t.Book?.Title</td><td>@t.BorrowDate.ToString("d")</td><td>@t.DueDate.ToString("d")</td><td>@t.Quantity</td><td>@t.QuantityReturned returned@if(t.Returns.Count>0){<details><summary class="small">@t.Returns.Count return events</summary>@foreach(var r in t.Returns.OrderBy(x=>x.ReturnedAtUtc)){<small class="d-block">@r.ReturnedAtUtc.ToLocalTime().ToString("d") · @r.Quantity copies</small>}</details>}</td><td>@(t.IsOverdue(DateTime.Today) ? "Overdue" : t.Status.ToString())</td></tr>}</tbody></table></div>}
+</div>
+<form asp-action="Delete" asp-route-id="@Model.Id" method="post" data-confirm="Delete this member? Existing history is retained and prevents deletion." class="mt-3"><button class="btn btn-outline-danger">Delete member</button></form>

@@ -1,0 +1,22 @@
+@model IReadOnlyList<Book>
+@{
+    ViewData["Title"] = "Books";
+    var page = (int)ViewBag.Page;
+    var pages = (int)ViewBag.TotalPages;
+}
+<div class="page-heading"><div><div class="eyebrow">COLLECTION</div><h1>Books</h1><p class="text-secondary mb-0">Manage titles, physical copies, and availability.</p></div><a class="btn btn-primary" asp-action="Create"><i class="bi bi-plus-lg me-2"></i>Add book</a></div>
+<div class="content-card">
+    <form class="toolbar" method="get">
+        <input class="form-control" name="q" value="@ViewBag.Query" placeholder="Search title, author, ISBN or ID" aria-label="Search books" />
+        <select class="form-select" name="categoryId" aria-label="Filter category"><option value="">All categories</option>@foreach (Category c in ViewBag.Categories) { <option value="@c.Id" selected="@(ViewBag.CategoryId == c.Id)">@c.Name</option> }</select>
+        <select class="form-select" name="availability" aria-label="Filter availability"><option value="">Any availability</option><option value="available" selected="@(ViewBag.Availability == "available")">Available</option><option value="unavailable" selected="@(ViewBag.Availability == "unavailable")">Unavailable</option></select>
+        <select class="form-select" name="year" aria-label="Filter publication year"><option value="">Any year</option>@foreach(int year in ViewBag.Years){<option value="@year" selected="@(ViewBag.Year == year)">@year</option>}</select>
+        <select class="form-select" name="sort" aria-label="Sort books"><option value="">Title A–Z</option><option value="date" selected="@(ViewBag.Sort == "date")">Recently added</option><option value="available" selected="@(ViewBag.Sort == "available")">Available copies</option></select>
+        <button class="btn btn-outline-secondary">Filter</button>
+    </form>
+    @if (Model.Count == 0) { <div class="empty-inline">No books matched your search. Add a book to get started.</div> }
+    else { <div class="table-responsive"><table class="table align-middle"><thead><tr><th>Book</th><th>Book ID / ISBN</th><th>Category</th><th>Copies available</th><th></th></tr></thead><tbody>
+    @foreach (var book in Model) { <tr><td><a asp-action="Details" asp-route-id="@book.Id">@book.Title</a><small class="d-block text-secondary">@book.Author</small></td><td>@book.BookCode<small class="d-block text-secondary">@(book.Isbn ?? "No ISBN")</small></td><td>@book.Category?.Name</td><td><span class="badge @(book.AvailableCopies > 0 ? "text-bg-success" : "text-bg-secondary")">@book.AvailableCopies / @book.TotalCopies</span></td><td class="text-end"><a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@book.Id" aria-label="Edit @book.Title"><i class="bi bi-pencil"></i></a></td></tr> }
+    </tbody></table></div> }
+    @if (pages > 1) { <nav class="mt-3" aria-label="Book pages"><ul class="pagination pagination-sm mb-0">@for (var p = 1; p <= pages; p++) { <li class="page-item @(p == page ? "active" : "")"><a class="page-link" asp-route-page="@p" asp-route-q="@ViewBag.Query" asp-route-categoryId="@ViewBag.CategoryId" asp-route-availability="@ViewBag.Availability" asp-route-year="@ViewBag.Year" asp-route-sort="@ViewBag.Sort">@p</a></li> }</ul></nav> }
+</div>

@@ -1,0 +1,55 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+<div class="page-heading"><div><div class="eyebrow">OVERVIEW</div><h1>@Model.LibraryName</h1><p class="text-secondary mb-0">A clear view of your library operations.</p></div><a class="btn btn-primary" asp-controller="Circulation" asp-action="Borrow"><i class="bi bi-plus-lg me-2"></i>Record a borrow</a></div>
+<div class="row g-3 stats-grid">
+    <div class="col-6 col-xl-3"><div class="stat-card"><span class="stat-icon blue"><i class="bi bi-book"></i></span><div class="stat-label">Book titles</div><div class="stat-value">@Model.Titles</div><div class="stat-foot">@Model.Copies total physical copies</div></div></div>
+    <div class="col-6 col-xl-3"><div class="stat-card"><span class="stat-icon green"><i class="bi bi-check2-circle"></i></span><div class="stat-label">Available copies</div><div class="stat-value">@Model.Available</div><div class="stat-foot">@Model.Borrowed currently borrowed</div></div></div>
+    <div class="col-6 col-xl-3"><div class="stat-card"><span class="stat-icon violet"><i class="bi bi-people"></i></span><div class="stat-label">Members</div><div class="stat-value">@Model.Members</div><div class="stat-foot">@Model.ActiveMembers active members</div></div></div>
+    <div class="col-6 col-xl-3"><div class="stat-card"><span class="stat-icon red"><i class="bi bi-clock-history"></i></span><div class="stat-label">Overdue loans</div><div class="stat-value">@Model.Overdue</div><div class="stat-foot">Items with unreturned copies</div></div></div>
+</div>
+<div class="row g-3 mt-1">
+    <div class="col-xl-8"><div class="panel h-100"><div class="panel-heading"><div><h2 class="h6">Circulation activity</h2><p class="text-secondary small mb-0">Copies borrowed and returned this year</p></div></div><div class="chart-wrap"><canvas id="borrowingChart" aria-label="Monthly borrowing and return activity"></canvas></div></div></div>
+    <div class="col-xl-4"><div class="panel h-100"><div class="panel-heading"><div><h2 class="h6">Quick actions</h2><p class="text-secondary small mb-0">Common library tasks</p></div></div><div class="quick-actions">
+        <a asp-controller="Books" asp-action="Create"><i class="bi bi-journal-plus"></i><span>Add a book</span><i class="bi bi-chevron-right"></i></a>
+        <a asp-controller="Members" asp-action="Create"><i class="bi bi-person-plus"></i><span>Register a member</span><i class="bi bi-chevron-right"></i></a>
+        <a asp-controller="Circulation" asp-action="Borrow"><i class="bi bi-box-arrow-up-right"></i><span>Record a borrow</span><i class="bi bi-chevron-right"></i></a>
+        <a asp-controller="Circulation" asp-action="Index"><i class="bi bi-box-arrow-in-down-left"></i><span>Record a return</span><i class="bi bi-chevron-right"></i></a>
+    </div></div></div>
+</div>
+<div class="row g-3 mt-1">
+    <div class="col-xl-7"><div class="panel"><div class="panel-heading"><h2 class="h6">Recent borrowing</h2><a asp-controller="Circulation" asp-action="Index" class="small">View all</a></div>
+        @if (Model.RecentTransactions.Count == 0) { <div class="empty-inline">No borrowing transactions yet.</div> } else {
+        <div class="table-responsive"><table class="table align-middle"><thead><tr><th>Transaction</th><th>Member</th><th>Book</th><th>Status</th></tr></thead><tbody>
+        @foreach (var item in Model.RecentTransactions) { <tr><td><a asp-controller="Circulation" asp-action="Details" asp-route-id="@item.Id">@item.TransactionCode</a></td><td>@item.Member?.FullName</td><td>@item.Book?.Title</td><td><span class="badge rounded-pill text-bg-light">@item.Status</span></td></tr> }
+        </tbody></table></div> }
+    </div></div>
+    <div class="col-xl-5"><div class="panel"><div class="panel-heading"><h2 class="h6">Low stock</h2><a asp-controller="Books" asp-action="Index" class="small">Browse books</a></div>
+        @if (Model.LowStock.Count == 0) { <div class="empty-inline">No books need attention.</div> } else { <div class="list-group list-group-flush">
+        @foreach (var book in Model.LowStock) { <a class="list-group-item list-group-item-action d-flex justify-content-between" asp-controller="Books" asp-action="Details" asp-route-id="@book.Id"><span>@book.Title<small class="d-block text-secondary">@book.BookCode</small></span><span class="badge text-bg-warning align-self-center">@book.AvailableCopies left</span></a> }
+        </div> }
+    </div></div>
+</div>
+<div class="row g-3 mt-1">
+    <div class="col-12"><div class="panel"><div class="panel-heading"><h2 class="h6">Current overdue transactions</h2><a asp-controller="Circulation" asp-action="Overdue" class="small">Manage overdue</a></div>
+        @if(Model.OverdueTransactions.Count==0){<div class="empty-inline">No overdue loans.</div>}else{<div class="table-responsive"><table class="table"><thead><tr><th>Transaction</th><th>Member</th><th>Book</th><th>Due date</th><th>Outstanding</th></tr></thead><tbody>@foreach(var t in Model.OverdueTransactions){<tr><td><a asp-controller="Circulation" asp-action="Details" asp-route-id="@t.Id">@t.TransactionCode</a></td><td>@t.Member?.FullName</td><td>@t.Book?.Title</td><td>@t.DueDate.ToString("d")</td><td>@t.Outstanding</td></tr>}</tbody></table></div>}
+    </div></div>
+</div>
+<div class="row g-3 mt-1">
+    <div class="col-xl-6"><div class="panel"><div class="panel-heading"><h2 class="h6">Recently returned</h2><a asp-controller="Circulation" asp-action="Index" class="small">All borrowing</a></div>
+        @if(Model.RecentlyReturned.Count==0){<div class="empty-inline">No books have been returned yet.</div>}else{<div class="list-group list-group-flush">@foreach(var r in Model.RecentlyReturned){<a class="list-group-item list-group-item-action d-flex justify-content-between" asp-controller="Circulation" asp-action="Details" asp-route-id="@r.BorrowTransactionId"><span>@r.BorrowTransaction?.Book?.Title<small class="d-block text-secondary">@r.BorrowTransaction?.Member?.FullName · @r.ReturnedAtUtc.ToLocalTime().ToString("d")</small></span><span class="badge text-bg-light align-self-center">@r.Quantity returned</span></a>}</div>}
+    </div></div>
+    <div class="col-xl-6"><div class="panel"><div class="panel-heading"><h2 class="h6">Popular books</h2><a asp-controller="Reports" asp-action="Index" asp-route-type="popular" class="small">View report</a></div>
+        @if(Model.PopularBooks.Count==0){<div class="empty-inline">No borrowing history to rank yet.</div>}else{<div class="list-group list-group-flush">@foreach(var b in Model.PopularBooks){<a class="list-group-item list-group-item-action d-flex justify-content-between" asp-controller="Books" asp-action="Details" asp-route-id="@b.BookId"><span>@b.Title</span><span class="text-secondary">@b.BorrowCount borrowed</span></a>}</div>}
+    </div></div>
+</div>
+@section Scripts {
+<script>
+new Chart(document.getElementById('borrowingChart'), {
+  type: 'bar',
+  data: { labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], datasets: [{ label: 'Copies borrowed', data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyBorrowings)), backgroundColor: '#315d91', borderRadius: 5, maxBarThickness: 32 }, { label: 'Copies returned', data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyReturns)), backgroundColor: '#82b7a0', borderRadius: 5, maxBarThickness: 32 }] },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } }, x: { grid: { display: false } } } }
+});
+</script>
+}

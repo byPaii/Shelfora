@@ -1,0 +1,42 @@
+@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
+    var isHome = controller == "Home";
+    var isBooks = controller == "Books";
+    var isCategories = controller == "Categories";
+    var isMembers = controller == "Members";
+    var isCirculation = controller == "Circulation";
+    var isOverdue = isCirculation && action == "Overdue";
+    var isReports = controller == "Reports";
+    var isSettings = controller == "Settings";
+}
+
+<nav class="nav flex-column app-navigation" aria-label="Main navigation">
+    <span class="nav-section-label">Workspace</span>
+    <a class="nav-link @(isHome ? "active" : null)" asp-controller="Home" asp-action="Index" aria-current="@(isHome ? "page" : null)">
+        <i class="bi bi-grid-1x2" aria-hidden="true"></i><span>Dashboard</span>
+    </a>
+    <a class="nav-link @(isBooks ? "active" : null)" asp-controller="Books" asp-action="Index" aria-current="@(isBooks ? "page" : null)">
+        <i class="bi bi-book" aria-hidden="true"></i><span>Books</span>
+    </a>
+    <a class="nav-link @(isCategories ? "active" : null)" asp-controller="Categories" asp-action="Index" aria-current="@(isCategories ? "page" : null)">
+        <i class="bi bi-tags" aria-hidden="true"></i><span>Categories</span>
+    </a>
+    <a class="nav-link @(isMembers ? "active" : null)" asp-controller="Members" asp-action="Index" aria-current="@(isMembers ? "page" : null)">
+        <i class="bi bi-people" aria-hidden="true"></i><span>Members</span>
+    </a>
+    <a class="nav-link @(isCirculation && !isOverdue ? "active" : null)" asp-controller="Circulation" asp-action="Index" aria-current="@(isCirculation && !isOverdue ? "page" : null)">
+        <i class="bi bi-arrow-left-right" aria-hidden="true"></i><span>Borrowing &amp; returns</span>
+    </a>
+    <a class="nav-link @(isOverdue ? "active" : null)" asp-controller="Circulation" asp-action="Overdue" aria-current="@(isOverdue ? "page" : null)">
+        <i class="bi bi-clock-history" aria-hidden="true"></i><span>Overdue</span>
+    </a>
+    <a class="nav-link @(isReports ? "active" : null)" asp-controller="Reports" asp-action="Index" aria-current="@(isReports ? "page" : null)">
+        <i class="bi bi-bar-chart" aria-hidden="true"></i><span>Reports</span>
+    </a>
+
+    <span class="nav-section-label nav-section-preferences">Preferences</span>
+    <a class="nav-link @(isSettings ? "active" : null)" asp-controller="Settings" asp-action="Index" aria-current="@(isSettings ? "page" : null)">
+        <i class="bi bi-gear" aria-hidden="true"></i><span>Library settings</span>
+    </a>
+</nav>

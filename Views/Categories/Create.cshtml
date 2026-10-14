@@ -1,0 +1,6 @@
+@model Category
+@{
+    ViewData["Title"] = "Add category";
+}
+<div class="page-heading"><div><div class="eyebrow">COLLECTION</div><h1>Add category</h1></div><a class="btn btn-outline-secondary" asp-action="Index">Cancel</a></div>
+<div class="content-card"><form asp-action="Create" method="post"><div asp-validation-summary="ModelOnly" class="alert alert-danger"></div><div class="mb-3"><label asp-for="Name" class="form-label"></label><input asp-for="Name" class="form-control" /><span asp-validation-for="Name" class="text-danger"></span></div><div class="mb-3"><label asp-for="Description" class="form-label"></label><textarea asp-for="Description" class="form-control"></textarea></div><button class="btn btn-primary">Create category</button></form></div>

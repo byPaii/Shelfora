@@ -1,0 +1,6 @@
+@model Book
+@{
+    ViewData["Title"] = "Add a book";
+}
+<div class="page-heading"><div><div class="eyebrow">COLLECTION</div><h1>Add a book</h1></div><a class="btn btn-outline-secondary" asp-action="Index">Cancel</a></div>
+<div class="content-card"><form asp-action="Create" method="post"><div asp-validation-summary="ModelOnly" class="alert alert-danger"></div><partial name="_Form" model="Model" /><div class="mt-4"><button class="btn btn-primary"><i class="bi bi-check2 me-1"></i>Save book</button></div></form></div>

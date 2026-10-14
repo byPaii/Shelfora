@@ -1,0 +1,11 @@
+@model Member
+<div class="row g-3">
+    <div class="col-md-6"><label asp-for="FullName" class="form-label"></label><input asp-for="FullName" class="form-control" /><span asp-validation-for="FullName" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="MemberCode" class="form-label">Member identifier</label><input asp-for="MemberCode" class="form-control" /><span asp-validation-for="MemberCode" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="Email" class="form-label"></label><input asp-for="Email" class="form-control" type="email" /><span asp-validation-for="Email" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="ContactNumber" class="form-label">Contact number</label><input asp-for="ContactNumber" class="form-control" /><span asp-validation-for="ContactNumber" class="text-danger"></span></div>
+    <div class="col-md-8"><label asp-for="Address" class="form-label"></label><input asp-for="Address" class="form-control" /></div>
+    <div class="col-md-4"><label asp-for="MembershipDate" class="form-label">Membership date</label><input asp-for="MembershipDate" class="form-control" type="date" /><span asp-validation-for="MembershipDate" class="text-danger"></span></div>
+    <div class="col-12"><label asp-for="Notes" class="form-label"></label><textarea asp-for="Notes" class="form-control" rows="3"></textarea></div>
+    <div class="col-12"><div class="form-check"><input asp-for="IsActive" class="form-check-input" /><label asp-for="IsActive" class="form-check-label">Active membership</label><span asp-validation-for="IsActive" class="text-danger ms-2"></span></div></div>
+</div>

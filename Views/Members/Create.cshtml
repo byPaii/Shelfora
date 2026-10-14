@@ -1,0 +1,6 @@
+@model Member
+@{
+    ViewData["Title"] = "Register member";
+}
+<div class="page-heading"><div><div class="eyebrow">PEOPLE</div><h1>Register member</h1></div><a class="btn btn-outline-secondary" asp-action="Index">Cancel</a></div>
+<div class="content-card"><form asp-action="Create" method="post"><div asp-validation-summary="ModelOnly" class="alert alert-danger"></div><partial name="_Form" model="Model" /><button class="btn btn-primary mt-4">Register member</button></form></div>

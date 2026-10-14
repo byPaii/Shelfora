@@ -1,0 +1,14 @@
+@model Book
+<div class="row g-3">
+    <div class="col-md-6"><label asp-for="Title" class="form-label"></label><input asp-for="Title" class="form-control" /><span asp-validation-for="Title" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="Author" class="form-label"></label><input asp-for="Author" class="form-control" /><span asp-validation-for="Author" class="text-danger"></span></div>
+    <div class="col-md-4"><label asp-for="BookCode" class="form-label">Book identifier</label><input asp-for="BookCode" class="form-control" /><span asp-validation-for="BookCode" class="text-danger"></span></div>
+    <div class="col-md-4"><label asp-for="Isbn" class="form-label">ISBN (optional)</label><input asp-for="Isbn" class="form-control" /><span asp-validation-for="Isbn" class="text-danger"></span></div>
+    <div class="col-md-4"><label asp-for="CategoryId" class="form-label">Category</label><select asp-for="CategoryId" class="form-select"><option value="">Select a category</option>@foreach (Category c in ViewBag.Categories) { <option value="@c.Id">@c.Name</option> }</select><span asp-validation-for="CategoryId" class="text-danger"></span><a asp-controller="Categories" asp-action="Create" class="small">Add a category</a></div>
+    <div class="col-md-4"><label asp-for="Publisher" class="form-label"></label><input asp-for="Publisher" class="form-control" /></div>
+    <div class="col-md-4"><label asp-for="PublicationYear" class="form-label">Publication year</label><input asp-for="PublicationYear" class="form-control" type="number" /></div>
+    <div class="col-md-4"><label asp-for="TotalCopies" class="form-label">Total copies</label><input asp-for="TotalCopies" class="form-control" type="number" min="0" /><span asp-validation-for="TotalCopies" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="ShelfLocation" class="form-label">Shelf / location</label><input asp-for="ShelfLocation" class="form-control" /></div>
+    <div class="col-md-6"><label asp-for="CoverImageUrl" class="form-label">Cover image URL</label><input asp-for="CoverImageUrl" class="form-control" /><span asp-validation-for="CoverImageUrl" class="text-danger"></span></div>
+    <div class="col-12"><label asp-for="Description" class="form-label"></label><textarea asp-for="Description" class="form-control" rows="3"></textarea></div>
+</div>

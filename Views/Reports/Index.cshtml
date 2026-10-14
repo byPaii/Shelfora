@@ -1,0 +1,27 @@
+@model ReportsViewModel
+@{
+    ViewData["Title"] = "Reports";
+}
+<div class="page-heading"><div><div class="eyebrow">INSIGHTS</div><h1>Reports</h1><p class="text-secondary mb-0">Live reports based on Shelfora database records.</p></div><button class="btn btn-outline-secondary" onclick="window.print()"><i class="bi bi-printer me-1"></i>Print</button></div>
+<div class="content-card">
+    <form class="toolbar" method="get">
+        <select name="type" class="form-select" aria-label="Report type"><option value="inventory" selected="@(Model.Type=="inventory")">Inventory</option><option value="borrowing" selected="@(Model.Type=="borrowing")">Borrowing</option><option value="returns" selected="@(Model.Type=="returns")">Returns</option><option value="overdue" selected="@(Model.Type=="overdue")">Overdue</option><option value="popular" selected="@(Model.Type=="popular")">Popular books</option><option value="members" selected="@(Model.Type=="members")">Member activity</option></select>
+        <input class="form-control" name="from" type="date" value="@Model.From?.ToString("yyyy-MM-dd")" aria-label="From date" />
+        <input class="form-control" name="to" type="date" value="@Model.To?.ToString("yyyy-MM-dd")" aria-label="To date" />
+        <button class="btn btn-primary">Run report</button>
+        <a class="btn btn-outline-secondary" asp-action="Export" asp-route-type="@Model.Type" asp-route-from="@Model.From?.ToString("yyyy-MM-dd")" asp-route-to="@Model.To?.ToString("yyyy-MM-dd")"><i class="bi bi-download me-1"></i>Export CSV</a>
+    </form>
+    @if(Model.Type=="inventory"){
+        if(Model.Books.Count==0){<div class="empty-inline">No inventory records found.</div>}else{<div class="table-responsive"><table class="table"><thead><tr><th>Book ID</th><th>Title</th><th>Author</th><th>Category</th><th>Total</th><th>Available</th></tr></thead><tbody>@foreach(var b in Model.Books){<tr><td>@b.BookCode</td><td>@b.Title</td><td>@b.Author</td><td>@b.Category?.Name</td><td>@b.TotalCopies</td><td>@b.AvailableCopies</td></tr>}</tbody></table></div>}
+    }else if(Model.Type=="overdue"){
+        if(Model.Overdue.Count==0){<div class="empty-inline">No overdue records found.</div>}else{<div class="table-responsive"><table class="table"><thead><tr><th>Transaction</th><th>Member</th><th>Book</th><th>Due</th><th>Outstanding</th><th>Days</th><th>Estimated fine units</th></tr></thead><tbody>@foreach(var x in Model.Overdue){<tr><td>@x.Transaction.TransactionCode</td><td>@x.Transaction.Member?.FullName</td><td>@x.Transaction.Book?.Title</td><td>@x.Transaction.DueDate.ToString("d")</td><td>@x.Transaction.Outstanding</td><td>@x.DaysOverdue</td><td>@x.EstimatedFine.ToString("0.00")</td></tr>}</tbody></table></div>}
+    }else if(Model.Type=="popular"){
+        if(Model.PopularBooks.Count==0){<div class="empty-inline">No borrowing history to report.</div>}else{<div class="table-responsive"><table class="table"><thead><tr><th>Book</th><th>Copies borrowed</th></tr></thead><tbody>@foreach(var b in Model.PopularBooks){<tr><td>@b.Title</td><td>@b.BorrowCount</td></tr>}</tbody></table></div>}
+    }else if(Model.Type=="members"){
+        if(Model.MemberActivity.Count==0){<div class="empty-inline">No member activity found.</div>}else{<div class="table-responsive"><table class="table"><thead><tr><th>Member</th><th>Transactions</th><th>Copies borrowed</th><th>Outstanding</th></tr></thead><tbody>@foreach(var m in Model.MemberActivity){<tr><td>@m.MemberName</td><td>@m.Transactions</td><td>@m.CopiesBorrowed</td><td>@m.Outstanding</td></tr>}</tbody></table></div>}
+    }else if(Model.Type=="returns"){
+        if(Model.ReturnEvents.Count==0){<div class="empty-inline">No return events matched this report.</div>}else{<div class="table-responsive"><table class="table"><thead><tr><th>Transaction</th><th>Member</th><th>Book</th><th>Returned</th><th>Quantity</th><th>Notes</th></tr></thead><tbody>@foreach(var r in Model.ReturnEvents){<tr><td>@r.BorrowTransaction?.TransactionCode</td><td>@r.BorrowTransaction?.Member?.FullName</td><td>@r.BorrowTransaction?.Book?.Title</td><td>@r.ReturnedAtUtc.ToString("d")</td><td>@r.Quantity</td><td>@(r.Notes ?? "—")</td></tr>}</tbody></table></div>}
+    }else{
+        if(Model.Transactions.Count==0){<div class="empty-inline">No transactions matched this report.</div>}else{<div class="table-responsive"><table class="table"><thead><tr><th>Transaction</th><th>Member</th><th>Book</th><th>Borrowed</th><th>Due</th><th>Quantity</th><th>Returned</th><th>Status</th></tr></thead><tbody>@foreach(var t in Model.Transactions){<tr><td>@t.TransactionCode</td><td>@t.Member?.FullName</td><td>@t.Book?.Title</td><td>@t.BorrowDate.ToString("d")</td><td>@t.DueDate.ToString("d")</td><td>@t.Quantity</td><td>@t.QuantityReturned</td><td>@t.Status</td></tr>}</tbody></table></div>}
+    }
+</div>

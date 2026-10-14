@@ -1,0 +1,18 @@
+@model LibrarySetting
+@{
+    ViewData["Title"] = "Library settings";
+}
+<div class="page-heading"><div><div class="eyebrow">PREFERENCES</div><h1>Library settings</h1><p class="text-secondary mb-0">These settings are stored in the database and affect circulation.</p></div></div>
+<div class="content-card"><form asp-action="Index" method="post"><input asp-for="Id" type="hidden" /><div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+    <h2 class="h6 mb-3">Library identity</h2><div class="row g-3 mb-4">
+    <div class="col-md-6"><label asp-for="LibraryName" class="form-label"></label><input asp-for="LibraryName" class="form-control" /><span asp-validation-for="LibraryName" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="ContactEmail" class="form-label"></label><input asp-for="ContactEmail" type="email" class="form-control" /><span asp-validation-for="ContactEmail" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="ContactNumber" class="form-label"></label><input asp-for="ContactNumber" class="form-control" /></div>
+    <div class="col-md-6"><label asp-for="Address" class="form-label"></label><input asp-for="Address" class="form-control" /></div>
+    <div class="col-12"><label asp-for="Description" class="form-label"></label><textarea asp-for="Description" class="form-control"></textarea></div></div>
+    <h2 class="h6 mb-3">Circulation policy</h2><div class="row g-3 mb-4">
+    <div class="col-md-6"><label asp-for="DefaultLoanDays" class="form-label">Default loan duration (days)</label><input asp-for="DefaultLoanDays" class="form-control" type="number" min="1" max="365" /><span asp-validation-for="DefaultLoanDays" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="DailyFineRate" class="form-label">Estimated fine per overdue copy, per day (currency units)</label><input asp-for="DailyFineRate" class="form-control" type="number" min="0" step=".01" /><span asp-validation-for="DailyFineRate" class="text-danger"></span></div></div>
+    <p class="small text-secondary">Fines shown by the application are estimates only; the application does not record payments.</p>
+    <button class="btn btn-primary">Save settings</button>
+</form></div>
